@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SmartPay Guard – User Activity</title>
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:#0d1117;
+    color:#fff;
+    font-family:Arial, sans-serif;
+    padding:28px 36px;
+  }
+  .topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid #1f242c;
+  }
+  .topbar h1{ font-size:20px; }
+  .topbar p{ font-size:10px; color:#008000; text-transform:uppercase; letter-spacing:.06em; margin-top:3px; }
+  .back-link{ color:#8b949e; text-decoration:none; font-size:13px; }
+  .back-link:hover{ color:#fff; }
+
+  .stat-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;
+  }
+  .stat-card{
+    background:#fff; color:#333; border-radius:10px; padding:16px 18px;
+  }
+  .stat-card .label{ font-size:10px; text-transform:uppercase; color:#666; letter-spacing:.05em; }
+  .stat-card .value{ font-size:26px; font-weight:700; margin:4px 0 2px; color:#008000; }
+
+  .card{
+    background:#fff; color:#333; border-radius:12px; padding:22px; margin-bottom:20px;
+  }
+  .card-title{
+    font-size:14px; font-weight:700; color:#008000; margin-bottom:4px; text-transform:uppercase;
+  }
+  .card-sub{ font-size:12px; color:#666; margin-bottom:16px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:12px; }
+  th{ background:#008000; color:#fff; padding:8px 10px; text-align:left; }
+  td{ padding:8px 10px; border-bottom:1px solid #e1e4e8; }
+
+  .badge{
+    display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase;
+  }
+  .badge.success{ background:#e6f4ea; color:#008000; }
+  .badge.failed{ background:#ffeef0; color:#cf222e; }
+  .badge.admin{ background:#fff8e1; color:#d4a017; }
+  .badge.analyst{ background:#f0f0f0; color:#555; }
+  .badge.active{ background:#e6f4ea; color:#008000; }
+  .badge.disabled{ background:#ffeef0; color:#cf222e; }
+
+  .toggle-btn{
+    background:#0d1117; color:#fff; border:none; padding:5px 12px; border-radius:5px;
+    font-size:11px; cursor:pointer;
+  }
+  .toggle-btn:hover{ background:#cf222e; }
+
+  .tbl-wrap{ max-height:380px; overflow-y:auto; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>🛡️ SmartPay Guard — User Activity</h1>
+    <p>Admin panel · {{ full_name }}</p>
+  </div>
+  <a href="/" class="back-link">← Back to Dashboard</a>
+</div>
+
+<div class="stat-grid" id="statGrid">
+  <div class="stat-card"><div class="label">Total Users</div><div class="value" id="sTotalUsers">—</div></div>
+  <div class="stat-card"><div class="label">Active Users</div><div class="value" id="sActiveUsers">—</div></div>
+  <div class="stat-card"><div class="label">Successful Logins</div><div class="value" id="sSuccessLogins">—</div></div>
+  <div class="stat-card"><div class="label">Failed Attempts</div><div class="value" id="sFailedLogins">—</div></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Registered Users</div>
+  <div class="card-sub">All users registered on SmartPay Guard, with their login history.</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Email</th><th>Role</th><th>Status</th>
+          <th>Total Logins</th><th>Last Login</th><th>Registered</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="usersBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Login Activity Log</div>
+  <div class="card-sub">Last 100 login attempts — successful and failed — with IP addresses.</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>User</th><th>Email Attempted</th><th>IP Address</th><th>Result</th><th>Reason</th><th>Time</th></tr>
+      </thead>
+      <tbody id="activityBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+async function loadData() {
+  const [usersRes, activityRes] = await Promise.all([
+    fetch('/api/admin/users'),
+    fetch('/api/admin/login-activity')
+  ]);
+  const users = await usersRes.json();
+  const activity = await activityRes.json();
+
+  // Stats
+  document.getElementById('sTotalUsers').textContent = users.length;
+  document.getElementById('sActiveUsers').textContent = users.filter(u => u.is_active).length;
+  document.getElementById('sSuccessLogins').textContent = activity.filter(a => a.success).length;
+  document.getElementById('sFailedLogins').textContent = activity.filter(a => !a.success).length;
+
+  // Users table
+  const ub = document.getElementById('usersBody');
+  ub.innerHTML = users.map(u => `
+    <tr>
+      <td>${u.full_name}</td>
+      <td>${u.email}</td>
+      <td><span class="badge ${u.role}">${u.role}</span></td>
+      <td><span class="badge ${u.is_active ? 'active' : 'disabled'}">${u.is_active ? 'Active' : 'Disabled'}</span></td>
+      <td>${u.total_logins}</td>
+      <td>${u.last_login ? new Date(u.last_login + 'Z').toLocaleString() : 'Never'}</td>
+      <td>${new Date(u.created_at + 'Z').toLocaleDateString()}</td>
+      <td><button class="toggle-btn" onclick="toggleUser(${u.id})">${u.is_active ? 'Disable' : 'Enable'}</button></td>
+    </tr>
+  `).join('');
+
+  // Activity table
+  const ab = document.getElementById('activityBody');
+  ab.innerHTML = activity.map(a => `
+    <tr>
+      <td>${a.full_name || '—'}</td>
+      <td>${a.email_attempted}</td>
+      <td>${a.ip_address || '—'}</td>
+      <td><span class="badge ${a.success ? 'success' : 'failed'}">${a.success ? 'Success' : 'Failed'}</span></td>
+      <td>${a.failure_reason || '—'}</td>
+      <td>${new Date(a.timestamp + 'Z').toLocaleString()}</td>
+    </tr>
+  `).join('');
+}
+
+async function toggleUser(id) {
+  const res = await fetch(`/api/admin/toggle-user/${id}`, { method: 'POST' });
+  const data = await res.json();
+  if (data.error) { alert(data.error); return; }
+  loadData();
+}
+
+loadData();
+</script>
+</body>
+</html>

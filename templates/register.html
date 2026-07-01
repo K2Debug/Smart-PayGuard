@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SmartPay Guard – Register</title>
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:#0d1117;
+    color:#fff;
+    font-family:Arial, sans-serif;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .auth-card{
+    background:#12181f;
+    border:1px solid #1f242c;
+    border-radius:14px;
+    padding:36px 32px;
+    width:380px;
+  }
+  .logo{ text-align:center; font-size:18px; font-weight:700; margin-bottom:4px; }
+  .tagline{ text-align:center; font-size:11px; color:#008000; text-transform:uppercase; letter-spacing:.06em; margin-bottom:26px; }
+  label{ display:block; font-size:12px; color:#8b949e; margin-bottom:5px; margin-top:14px; }
+  input{
+    width:100%;
+    padding:10px 12px;
+    border-radius:6px;
+    border:1px solid #2a313b;
+    background:#0d1117;
+    color:#fff;
+    font-size:13px;
+    outline:none;
+  }
+  input:focus{ border-color:#008000; }
+  .hint{ font-size:10px; color:#666; margin-top:4px; }
+  .submit-btn{
+    width:100%;
+    background:#008000;
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:30px;
+    font-weight:700;
+    font-size:14px;
+    margin-top:22px;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .submit-btn:hover{ background:#006600; }
+  .switch-link{
+    text-align:center;
+    font-size:12px;
+    color:#8b949e;
+    margin-top:18px;
+  }
+  .switch-link a{ color:#008000; text-decoration:none; font-weight:700; }
+  .error-msg, .success-msg{
+    display:none;
+    padding:9px 12px;
+    border-radius:6px;
+    font-size:12px;
+    margin-top:14px;
+  }
+  .error-msg{ background:#ffeef0; color:#cf222e; border:1px solid #cf222e; }
+  .success-msg{ background:#e6f4ea; color:#008000; border:1px solid #008000; }
+  .error-msg.show, .success-msg.show{ display:block; }
+</style>
+</head>
+<body>
+
+<div class="auth-card">
+  <div class="logo">🛡️ SMARTPAY GUARD</div>
+  <div class="tagline">Create your account</div>
+
+  <div id="errorMsg" class="error-msg"></div>
+  <div id="successMsg" class="success-msg"></div>
+
+  <label for="full_name">Full Name</label>
+  <input type="text" id="full_name" placeholder="Hajrah Mohamed" />
+
+  <label for="email">Email</label>
+  <input type="email" id="email" placeholder="you@example.com" />
+
+  <label for="password">Password</label>
+  <input type="password" id="password" placeholder="••••••••" />
+  <div class="hint">At least 6 characters</div>
+
+  <label for="confirm_password">Confirm Password</label>
+  <input type="password" id="confirm_password" placeholder="••••••••" />
+
+  <button class="submit-btn" onclick="doRegister()">Create Account</button>
+
+  <div class="switch-link">
+    Already have an account? <a href="/login-page">Log in</a>
+  </div>
+</div>
+
+<script>
+async function doRegister() {
+  const full_name = document.getElementById('full_name').value.trim();
+  const email      = document.getElementById('email').value.trim();
+  const password   = document.getElementById('password').value;
+  const confirm    = document.getElementById('confirm_password').value;
+  const errBox     = document.getElementById('errorMsg');
+  const okBox      = document.getElementById('successMsg');
+  errBox.classList.remove('show');
+  okBox.classList.remove('show');
+
+  if (!full_name || !email || !password || !confirm) {
+    errBox.textContent = 'Please fill in all fields.';
+    errBox.classList.add('show');
+    return;
+  }
+  if (password !== confirm) {
+    errBox.textContent = 'Passwords do not match.';
+    errBox.classList.add('show');
+    return;
+  }
+  if (password.length < 6) {
+    errBox.textContent = 'Password must be at least 6 characters.';
+    errBox.classList.add('show');
+    return;
+  }
+
+  try {
+    const res = await fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name, email, password })
+    });
+    const data = await res.json();
+    if (data.error) {
+      errBox.textContent = data.error;
+      errBox.classList.add('show');
+    } else {
+      okBox.textContent = data.message + ' Redirecting to login…';
+      okBox.classList.add('show');
+      setTimeout(() => window.location.href = '/login-page', 1500);
+    }
+  } catch (err) {
+    errBox.textContent = 'Network error. Please try again.';
+    errBox.classList.add('show');
+  }
+}
+</script>
+</body>
+</html>

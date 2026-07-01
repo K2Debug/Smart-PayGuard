@@ -1,9 +1,5 @@
-import os
 import io
-import sqlite3
 import warnings
-from datetime import datetime
-from functools import wraps
 warnings.filterwarnings("ignore")
 
 import pandas as pd
@@ -11,295 +7,9 @@ import numpy as np
 from scipy import stats
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
-app.secret_key = "change-this-to-a-random-secret-key-before-deploying"  # IMPORTANT: change this!
-
-DB_PATH = os.path.join(os.path.dirname(__file__), "users.db")
-
-
-# ───────────────────────── DATABASE SETUP ─────────────────────────
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            full_name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            role TEXT NOT NULL DEFAULT 'analyst',
-            is_active INTEGER NOT NULL DEFAULT 1,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login TIMESTAMP,
-            total_logins INTEGER NOT NULL DEFAULT 0
-        )
-    """)
-
-    # Every login attempt (success or failure) gets logged here
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS login_activity (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            email_attempted TEXT NOT NULL,
-            ip_address TEXT,
-            user_agent TEXT,
-            success INTEGER NOT NULL,
-            failure_reason TEXT,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        )
-    """)
-
-    # Optional: track what each logged-in user does (e.g. ran detection)
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS activity_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            action TEXT NOT NULL,
-            details TEXT,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        )
-    """)
-
-    conn.commit()
-    conn.close()
-
-init_db()
-
-
-def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def log_activity(user_id, action, details=""):
-    conn = get_db()
-    conn.execute(
-        "INSERT INTO activity_log (user_id, action, details) VALUES (?, ?, ?)",
-        (user_id, action, details)
-    )
-    conn.commit()
-    conn.close()
-
-
-def get_client_ip():
-    # Works behind most proxies/hosts (Render, PythonAnywhere) and locally
-    fwd = request.headers.get('X-Forwarded-For', '')
-    if fwd:
-        return fwd.split(',')[0].strip()
-    return request.remote_addr
-
-
-# ───────────────────────── LOGIN PROTECTION ─────────────────────────
-def login_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if "user_id" not in session:
-            return redirect(url_for("login_page"))
-        return f(*args, **kwargs)
-    return decorated
-
-
-def admin_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if "user_id" not in session:
-            return redirect(url_for("login_page"))
-        if session.get("role") != "admin":
-            return jsonify({'error': 'Admin access required.'}), 403
-        return f(*args, **kwargs)
-    return decorated
-
-
-# ───────────────────────── AUTH ROUTES ─────────────────────────
-@app.route('/register-page')
-def register_page():
-    return render_template('register.html')
-
-@app.route('/login-page')
-def login_page():
-    return render_template('login.html')
-
-
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    full_name = (data.get('full_name') or '').strip()
-    email     = (data.get('email') or '').strip().lower()
-    password  = data.get('password') or ''
-
-    if not full_name or not email or not password:
-        return jsonify({'error': 'All fields are required.'}), 400
-    if len(password) < 6:
-        return jsonify({'error': 'Password must be at least 6 characters.'}), 400
-
-    conn = get_db()
-    existing = conn.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()
-    if existing:
-        conn.close()
-        return jsonify({'error': 'An account with this email already exists.'}), 400
-
-    # First-ever registered user becomes admin automatically
-    user_count = conn.execute("SELECT COUNT(*) AS c FROM users").fetchone()['c']
-    role = 'admin' if user_count == 0 else 'analyst'
-
-    password_hash = generate_password_hash(password)
-    conn.execute(
-        "INSERT INTO users (full_name, email, password_hash, role) VALUES (?, ?, ?, ?)",
-        (full_name, email, password_hash, role)
-    )
-    conn.commit()
-    conn.close()
-
-    return jsonify({'status': 'success', 'message': 'Account created! Please log in.'})
-
-
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    email    = (data.get('email') or '').strip().lower()
-    password = data.get('password') or ''
-
-    ip_addr    = get_client_ip()
-    user_agent = request.headers.get('User-Agent', '')[:255]
-
-    conn = get_db()
-    user = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
-
-    # ── Case: no such user ──
-    if not user:
-        conn.execute(
-            "INSERT INTO login_activity (user_id, email_attempted, ip_address, user_agent, success, failure_reason) VALUES (?,?,?,?,?,?)",
-            (None, email, ip_addr, user_agent, 0, "No account with this email")
-        )
-        conn.commit()
-        conn.close()
-        return jsonify({'error': 'Invalid email or password.'}), 401
-
-    # ── Case: account disabled ──
-    if not user['is_active']:
-        conn.execute(
-            "INSERT INTO login_activity (user_id, email_attempted, ip_address, user_agent, success, failure_reason) VALUES (?,?,?,?,?,?)",
-            (user['id'], email, ip_addr, user_agent, 0, "Account disabled")
-        )
-        conn.commit()
-        conn.close()
-        return jsonify({'error': 'This account has been disabled. Contact an administrator.'}), 403
-
-    # ── Case: wrong password ──
-    if not check_password_hash(user['password_hash'], password):
-        conn.execute(
-            "INSERT INTO login_activity (user_id, email_attempted, ip_address, user_agent, success, failure_reason) VALUES (?,?,?,?,?,?)",
-            (user['id'], email, ip_addr, user_agent, 0, "Incorrect password")
-        )
-        conn.commit()
-        conn.close()
-        return jsonify({'error': 'Invalid email or password.'}), 401
-
-    # ── Success ──
-    conn.execute(
-        "INSERT INTO login_activity (user_id, email_attempted, ip_address, user_agent, success, failure_reason) VALUES (?,?,?,?,?,?)",
-        (user['id'], email, ip_addr, user_agent, 1, None)
-    )
-    conn.execute(
-        "UPDATE users SET last_login = CURRENT_TIMESTAMP, total_logins = total_logins + 1 WHERE id = ?",
-        (user['id'],)
-    )
-    conn.commit()
-    conn.close()
-
-    session['user_id']   = user['id']
-    session['full_name'] = user['full_name']
-    session['email']     = user['email']
-    session['role']      = user['role']
-    session['login_time'] = datetime.utcnow().isoformat()
-
-    return jsonify({'status': 'success', 'full_name': user['full_name'], 'role': user['role']})
-
-
-@app.route('/logout')
-def logout():
-    if 'user_id' in session:
-        log_activity(session['user_id'], 'logout')
-    session.clear()
-    return redirect(url_for('login_page'))
-
-
-@app.route('/api/session')
-def api_session():
-    if "user_id" in session:
-        return jsonify({
-            'logged_in': True,
-            'full_name': session['full_name'],
-            'email': session['email'],
-            'role': session.get('role', 'analyst')
-        })
-    return jsonify({'logged_in': False})
-
-
-# ───────────────────────── MAIN APP (PROTECTED) ─────────────────────────
-@app.route('/')
-@login_required
-def home():
-    return render_template('index.html', full_name=session.get('full_name'), role=session.get('role'))
-
-
-# ───────────────────────── ADMIN: ACTIVITY DASHBOARD ─────────────────────────
-@app.route('/admin/activity')
-@admin_required
-def admin_activity_page():
-    return render_template('activity.html', full_name=session.get('full_name'))
-
-
-@app.route('/api/admin/users')
-@admin_required
-def api_admin_users():
-    conn = get_db()
-    users = conn.execute("""
-        SELECT id, full_name, email, role, is_active, created_at, last_login, total_logins
-        FROM users ORDER BY created_at DESC
-    """).fetchall()
-    conn.close()
-    return jsonify([dict(u) for u in users])
-
-
-@app.route('/api/admin/login-activity')
-@admin_required
-def api_admin_login_activity():
-    conn = get_db()
-    rows = conn.execute("""
-        SELECT la.id, la.email_attempted, la.ip_address, la.success, la.failure_reason, la.timestamp,
-               u.full_name
-        FROM login_activity la
-        LEFT JOIN users u ON la.user_id = u.id
-        ORDER BY la.timestamp DESC
-        LIMIT 100
-    """).fetchall()
-    conn.close()
-    return jsonify([dict(r) for r in rows])
-
-
-@app.route('/api/admin/toggle-user/<int:uid>', methods=['POST'])
-@admin_required
-def api_admin_toggle_user(uid):
-    if uid == session['user_id']:
-        return jsonify({'error': "You can't disable your own account."}), 400
-    conn = get_db()
-    user = conn.execute("SELECT is_active FROM users WHERE id = ?", (uid,)).fetchone()
-    if not user:
-        conn.close()
-        return jsonify({'error': 'User not found.'}), 404
-    new_status = 0 if user['is_active'] else 1
-    conn.execute("UPDATE users SET is_active = ? WHERE id = ?", (new_status, uid))
-    conn.commit()
-    conn.close()
-    return jsonify({'status': 'success', 'is_active': new_status})
 
 
 # ───────────────────────── ML DETECTION LOGIC ─────────────────────────
@@ -331,8 +41,12 @@ def risk_label(score):
     return "CLEAN"
 
 
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+
 @app.route('/predict', methods=['POST'])
-@login_required
 def predict():
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'}), 400
@@ -444,10 +158,6 @@ def predict():
                         all_reasons.append(p)
         from collections import Counter
         reason_counts = dict(Counter(all_reasons).most_common(6))
-
-        # Track that this user ran a detection
-        log_activity(session['user_id'], 'ran_detection',
-                     f"file={uploaded_file.filename}, total={total_transactions}, flagged={n_fraud}")
 
         return jsonify({
             'status': 'success',

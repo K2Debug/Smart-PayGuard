@@ -20,25 +20,25 @@ AI-powered anomaly detection for mobile money transaction datasets. Upload a fil
 
 ## Dataset Format
 
-Upload **CSV**, **Excel** (.xlsx / .xls), or **JSON**. The file must include these columns:
+Upload **CSV**, **Excel** (`.xlsx` / `.xls`), or **JSON**. The file must include these columns:
 
 | Column | Description |
 |--------|-------------|
-| Date | Transaction date |
-| Time | Transaction time |
-| Sender | Sender identifier |
-| Receiver | Receiver identifier |
-| Amount | Transaction amount |
-| Balance | Account balance after transaction |
-| provider | Mobile money provider |
-| Region Sent | Origin region |
-| Region Received | Destination region |
+| `Date` | Transaction date |
+| `Time` | Transaction time |
+| `Sender` | Sender identifier |
+| `Receiver` | Receiver identifier |
+| `Amount` | Transaction amount |
+| `Balance` | Account balance after transaction |
+| `provider` | Mobile money provider |
+| `Region Sent` | Origin region |
+| `Region Received` | Destination region |
 
-A sample file with 100 synthetic records is included: sample_transactions_100.csv.
+A sample file with 100 synthetic records is included: `sample_transactions_100.csv`.
 
 ## Installation
 
-ash
+```bash
 git clone https://github.com/K2Debug/Smart-PayGuard.git
 cd Smart-PayGuard
 python -m venv .venv
@@ -50,13 +50,13 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install -r requirements.txt
-
+```
 
 ## Usage
 
-ash
+```bash
 python app.py
-
+```
 
 Open [http://localhost:5000](http://localhost:5000) in your browser.
 
@@ -76,16 +76,19 @@ A transaction is flagged if any ML flag or key rule fires. Senders with flagged 
 
 ## Project Structure
 
-
+```
 smartpay_tracked/
-├── app.py                      # Flask app and detection pipeline
-├── requirements.txt            # Python dependencies
-├── sample_transactions_100.csv # Sample test dataset (100 rows)
-├── README.md
-└── templates/
-    └── index.html              # Dashboard UI
+|-- app.py
+|-- requirements.txt
+|-- sample_transactions_100.csv
+|-- README.md
+`-- templates/
+    `-- index.html
+```
 
-
-## License
-
-MIT
+| Path | Purpose |
+|------|---------|
+| `app.py` | Flask app and detection pipeline |
+| `requirements.txt` | Python dependencies |
+| `sample_transactions_100.csv` | Sample test dataset (100 rows) |
+| `templates/index.html` | Dashboard UI |

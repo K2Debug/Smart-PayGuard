@@ -1,0 +1,101 @@
+Date,Time,Sender,Receiver,Amount,Balance,provider,Region Sent,Region Received
+2025-06-01,19:49:00,Zawadi Juma,Neema Kimaro,146394,260374,Tigo Pesa,Mbeya,Mbeya
+2025-06-01,17:23:00,Rajab Mushi,Neema Said,248557,3171,M-Pesa,Mwanza,Arusha
+2025-06-02,05:04:00,Hassan Kimaro,Omari Kimaro,218915,89829,Airtel Money,Mbeya,Mbeya
+2025-06-01,19:33:00,Neema Mwangi,Salma Juma,74483,265566,Airtel Money,Mbeya,Mbeya
+2025-06-02,20:19:00,Rajab Hassan,Neema Kimaro,191895,170522,Tigo Pesa,Dodoma,Dodoma
+2025-06-03,00:07:00,Anonymous,Zawadi Mushi,168354,-68354,M-Pesa,Arusha,Mwanza
+2025-06-02,21:14:00,Juma Nyerere,Hassan Mwangi,159256,247408,M-Pesa,Dar es Salaam,Zanzibar
+2025-06-02,15:21:00,Hassan Juma,Hassan Hassan,230348,-100216,Tigo Pesa,Dar es Salaam,Dar es Salaam
+2025-06-03,20:08:00,Neema Mwangi,Salma Juma,146356,119210,Halopesa,Zanzibar,Zanzibar
+2025-06-04,05:26:00,Hassan Juma,Hassan Kassim,216680,-316896,Halopesa,Arusha,Zanzibar
+2025-06-04,03:55:00,Zawadi Juma,Fatuma Mkapa,127427,132947,M-Pesa,Zanzibar,Zanzibar
+2025-06-04,00:55:00,Neema Juma,Salma Juma,214870,102268,Halopesa,Dar es Salaam,Arusha
+2025-06-04,23:17:00,Juma Said,Juma Said,34050,412197,Halopesa,Dodoma,Dar es Salaam
+2025-06-04,15:34:00,Rajab Hassan,Amina Juma,175955,-5433,Airtel Money,Dar es Salaam,Dar es Salaam
+2025-06-05,05:13:00,Zawadi Mwangi,Fatuma Mkapa,131185,-56483,Airtel Money,Dodoma,Dodoma
+2025-06-05,02:59:00,Omari Said,Neema Said,74521,196812,Halopesa,Dodoma,Zanzibar
+2025-06-05,23:03:00,Juma Said,Zawadi Mushi,62068,350129,M-Pesa,Mbeya,Mbeya
+2025-06-05,15:37:00,Juma Nyerere,Neema Hassan,18144,229264,Airtel Money,Dodoma,Dodoma
+2025-06-05,16:11:00,Neema Juma,Rajab Mwangi,228174,-125906,Airtel Money,Dar es Salaam,Dar es Salaam
+2025-06-05,21:38:00,Omari Said,Amina Juma,156760,40052,Halopesa,Dar es Salaam,Dar es Salaam
+2025-06-07,06:59:00,Neema Mwangi,Rajab Nyerere,87934,31276,Tigo Pesa,Mwanza,Zanzibar
+2025-06-07,02:42:00,Hassan Juma,Fatuma Lyimo,39308,-356204,M-Pesa,Zanzibar,Mwanza
+2025-06-06,17:34:00,Juma Mwangi,Zawadi Mushi,24204,98321,Airtel Money,Arusha,Arusha
+2025-06-06,08:23:00,Zawadi Juma,Bakari Nyerere,62018,70929,Tigo Pesa,Mwanza,Mbeya
+2025-06-08,06:42:00,Juma Lyimo,Hassan Kassim,7050,320358,M-Pesa,Mbeya,Zanzibar
+2025-06-07,17:06:00,Juma Said,Fatuma Lyimo,238232,111897,Tigo Pesa,Zanzibar,Zanzibar
+2025-06-07,20:21:00,Amina Kassim,Neema Hassan,193117,-59241,Tigo Pesa,Arusha,Arusha
+2025-06-07,22:58:00,Fatuma Juma,Salma Juma,242328,7750,Tigo Pesa,Dar es Salaam,Dodoma
+2025-06-09,00:08:00,Neema Juma,Neema Said,207144,-333050,Airtel Money,Zanzibar,Zanzibar
+2025-06-09,03:00:00,Juma Nyerere,Zawadi Mushi,152038,77226,Airtel Money,Dar es Salaam,Zanzibar
+2025-06-09,01:35:00,Rajab Hassan,Rajab Said,157701,-163134,M-Pesa,Arusha,Arusha
+2025-06-08,15:22:00,Amina Kassim,Bakari Kimaro,240647,-299888,M-Pesa,Arusha,Arusha
+2025-06-10,03:47:00,Zawadi Juma,Neema Kimaro,167702,-96773,Airtel Money,Arusha,Arusha
+2025-06-09,19:26:00,Zawadi Mwangi,Hassan Kassim,236057,-292540,Halopesa,Dar es Salaam,Mwanza
+2025-06-09,22:47:00,Neema Mwangi,Bakari Nyerere,8500000,-8468724,M-Pesa,Arusha,Zanzibar
+2025-06-09,15:30:00,Omari Said,Bakari Nyerere,230075,-190023,Tigo Pesa,Arusha,Dodoma
+2025-06-10,21:01:00,Amina Kassim,Salma Mushi,63438,-363326,Tigo Pesa,Zanzibar,Mwanza
+2025-06-10,22:41:00,Hassan Kimaro,Neema Kimaro,97050,-7221,Tigo Pesa,Mbeya,Mbeya
+2025-06-10,22:37:00,Juma Mwangi,Amina Juma,51810,46511,Halopesa,Mwanza,Mbeya
+2025-06-11,00:38:00,Zawadi Juma,Omari Kimaro,119398,-216171,Airtel Money,Mbeya,Mbeya
+2025-06-12,03:33:00,Salma Said,Rajab Said,5443,373519,Airtel Money,Mbeya,Mbeya
+2025-06-11,16:58:00,Zawadi Juma,Fatuma Mkapa,179125,-395296,M-Pesa,Mwanza,Mwanza
+2025-06-11,23:19:00,Juma Nyerere,Bakari Nyerere,137939,-60713,Halopesa,Zanzibar,Zanzibar
+2025-06-11,18:26:00,Omari Kassim,Rajab Juma,55289,730,Airtel Money,Zanzibar,Zanzibar
+2025-06-12,23:35:00,Juma Lyimo,Rajab Nyerere,111450,208908,Halopesa,Dar es Salaam,Arusha
+2025-06-13,00:28:00,Juma Nyerere,Neema Hassan,126893,-187606,Halopesa,Dodoma,Dodoma
+2025-06-12,16:32:00,Juma Nyerere,Hassan Hassan,79392,-266998,Tigo Pesa,Zanzibar,Zanzibar
+2025-06-12,19:43:00,Hassan Kimaro,Salma Mushi,35392,-2500000,Airtel Money,Mwanza,Arusha
+2025-06-13,21:39:00,Juma Mwangi,Rajab Said,129554,-83043,Airtel Money,Dar es Salaam,Dar es Salaam
+2025-06-14,02:25:00,Omari Kassim,Omari Nyerere,134598,-133868,M-Pesa,Arusha,Zanzibar
+2025-06-13,17:27:00,Juma Kassim,Bakari Nyerere,209058,218807,Halopesa,Arusha,Zanzibar
+2025-06-13,21:54:00,Neema Juma,Hassan Mwangi,245509,-578559,Halopesa,Dar es Salaam,Dar es Salaam
+2025-06-15,00:57:00,Neema Mwangi,Rajab Mwangi,202984,-8468724,Halopesa,Dodoma,Dodoma
+2025-06-14,19:55:00,Rajab Hassan,Zawadi Mushi,199944,-363078,Airtel Money,Dodoma,Dodoma
+2025-06-15,06:40:00,Rajab Said,Rajab Juma,132034,275378,Tigo Pesa,Arusha,Dar es Salaam
+2025-06-15,00:57:00,Hassan Juma,Fatuma Lyimo,88809,-445013,Airtel Money,Mbeya,Arusha
+2025-06-15,18:13:00,Omari Said,Omari Nyerere,190183,-380206,Tigo Pesa,Dar es Salaam,Dar es Salaam
+2025-06-16,03:13:00,Rajab Hassan,Zawadi Mushi,21322,-384400,M-Pesa,Dodoma,Dodoma
+2025-06-16,02:00:00,Juma Kassim,Rajab Nyerere,130037,88770,Halopesa,Mwanza,Dodoma
+2025-06-15,21:14:00,Rajab Hassan,Omari Kimaro,132986,-517386,M-Pesa,Mwanza,Mwanza
+2025-06-17,02:10:00,Omari Said,Neema Hassan,194839,-575045,M-Pesa,Dodoma,Dodoma
+2025-06-16,14:41:00,Omari Said,Rajab Nyerere,27006,-602051,Airtel Money,Dodoma,Dodoma
+2025-06-17,02:13:00,Neema Juma,Fatuma Lyimo,90813,-669372,Tigo Pesa,Dodoma,Dodoma
+2025-06-17,03:53:00,Juma Kassim,Salma Mushi,71131,17639,M-Pesa,Dar es Salaam,Dar es Salaam
+2025-06-17,16:41:00,Zawadi Juma,Omari Lyimo,209795,-605091,Airtel Money,Dar es Salaam,Dar es Salaam
+2025-06-17,14:09:00,Amina Hassan,Salma Mushi,167879,-60392,M-Pesa,Arusha,Zanzibar
+2025-06-18,04:16:00,Juma Nyerere,Zawadi Mushi,188360,-455358,M-Pesa,Mwanza,Mbeya
+2025-06-17,19:06:00,Juma Kassim,Salma Mushi,86536,-68897,Halopesa,Mbeya,Mwanza
+2025-06-18,20:37:00,Omari Said,Omari Nyerere,24922,-626973,Airtel Money,Zanzibar,Zanzibar
+2025-06-18,23:43:00,Juma Kassim,Omari Nyerere,227899,-296796,M-Pesa,Mbeya,Mbeya
+2025-06-19,03:23:00,Zawadi Juma,Hassan Mwangi,178413,-783504,Tigo Pesa,Dar es Salaam,Dar es Salaam
+2025-06-19,03:31:00,Juma Mwangi,Bakari Nyerere,220569,-303612,Tigo Pesa,Dar es Salaam,Dar es Salaam
+2025-06-20,04:09:00,Rajab Said,Rajab Juma,190416,84962,Tigo Pesa,Dodoma,Mbeya
+2025-06-20,05:27:00,Juma Lyimo,Hassan Kassim,126863,82045,Tigo Pesa,Zanzibar,Zanzibar
+2025-06-19,16:56:00,Hassan Juma,Salma Mushi,78119,-523132,Halopesa,Dodoma,Dodoma
+2025-06-20,05:20:00,Hassan Kassim,Neema Said,228072,156921,Tigo Pesa,Arusha,Arusha
+2025-06-20,22:38:00,Salma Said,Neema Hassan,235770,137749,M-Pesa,Zanzibar,Zanzibar
+2025-06-20,16:46:00,Fatuma Juma,Zawadi Mushi,68270,-60520,Airtel Money,Dodoma,Dodoma
+2025-06-21,05:50:00,Omari Kassim,Salma Juma,122486,-256354,Halopesa,Dar es Salaam,Arusha
+2025-06-20,23:37:00,Omari Kassim,Omari Lyimo,179053,-435407,Tigo Pesa,Mwanza,Mwanza
+2025-06-22,00:44:00,Neema Mwangi,Omari Kimaro,97225,-8468724,Airtel Money,Dodoma,Mwanza
+2025-06-21,20:07:00,Juma Kassim,Omari Kimaro,87719,-384515,Airtel Money,Zanzibar,Zanzibar
+2025-06-22,05:46:00,Amina Hassan,Zawadi Mushi,77482,-137874,Tigo Pesa,Mbeya,Mbeya
+2025-06-21,20:14:00,Juma Kassim,Salma Mushi,82659,-467174,Airtel Money,Mwanza,Dar es Salaam
+2025-06-22,15:18:00,Salma Said,Rajab Said,150059,-12310,Halopesa,Zanzibar,Zanzibar
+2025-06-22,14:18:00,Juma Kassim,Bakari Nyerere,155487,-622661,Tigo Pesa,Dodoma,Dodoma
+2025-06-22,22:30:00,Zawadi Mwangi,Rajab Said,230895,-523435,Halopesa,Dar es Salaam,Dar es Salaam
+2025-06-22,15:09:00,Rajab Mushi,Hassan Hassan,44774,-41603,M-Pesa,Mbeya,Mbeya
+2025-06-24,03:38:00,Hassan Juma,Amina Juma,163942,-687074,Halopesa,Mbeya,Mbeya
+2025-06-24,04:55:00,Fatuma Nyerere,Rajab Juma,82949,357,Tigo Pesa,Mbeya,Mbeya
+2025-06-23,15:47:00,Juma Nyerere,Neema Hassan,164811,-620169,Airtel Money,Dar es Salaam,Dar es Salaam
+2025-06-23,22:05:00,Rajab Said,Omari Lyimo,178127,-93165,M-Pesa,Arusha,Mbeya
+2025-06-25,03:44:00,Zawadi Mwangi,Neema Said,123096,-646531,M-Pesa,Mbeya,Mbeya
+2025-06-24,23:55:00,Hassan Juma,Rajab Juma,189283,-876357,Tigo Pesa,Dodoma,Arusha
+2025-06-24,20:07:00,Rajab Said,Neema Hassan,116447,-209612,Tigo Pesa,Mbeya,Arusha
+2025-06-24,15:50:00,Juma Said,Hassan Hassan,48495,63402,Tigo Pesa,Mwanza,Mwanza
+2025-06-26,04:19:00,Fatuma Nyerere,Amina Juma,185532,-185175,Tigo Pesa,Zanzibar,Zanzibar
+2025-06-26,05:05:00,Fatuma Juma,Hassan Mwangi,119755,-180275,Tigo Pesa,Mbeya,Dodoma
+2025-06-25,14:14:00,Juma Lyimo,Fatuma Lyimo,28940,53105,M-Pesa,Zanzibar,Zanzibar
+2025-06-25,22:02:00,Juma Kassim,Rajab Juma,156059,-778720,Halopesa,Arusha,Arusha

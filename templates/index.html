@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SmartPay Guard – AI Anomaly Detection</title>
+  <title>PayTrace – Mobile Money Fraud Detector</title>
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
@@ -329,7 +329,7 @@
 <!-- ══ SIDEBAR ══════════════════════════════════════════════════════════ -->
 <nav class="sidebar">
   <div>
-    <div class="logo">🛡️ SMARTPAY GUARD</div>
+    <div class="logo">🔍 PAYTRACE</div>
     <ul class="nav">
       <li data-page="dashboard"><a href="#">🏠 Dashboard</a></li>
       <li data-page="upload" class="active"><a href="#">📥 Upload Dataset</a></li>
@@ -340,8 +340,8 @@
     </ul>
   </div>
   <div class="sidebar-footer">
-    <strong>SMARTPAY GUARD</strong>
-    Protecting Transactions, Powering Trust.
+    <strong>PAYTRACE</strong>
+    Tracing risk. Protecting payments.
   </div>
 </nav>
 
@@ -349,8 +349,8 @@
 <div class="main">
   <header class="topbar">
     <div>
-      <h1>SMARTPAY GUARD</h1>
-      <p>— AI Powered Payment Anomaly Detection —</p>
+      <h1>PAYTRACE</h1>
+      <p>— Mobile Money Fraud Detector —</p>
     </div>
   </header>
 
@@ -363,7 +363,7 @@
   <!-- ── DASHBOARD ── -->
   <section class="page active" id="page-dashboard">
     <div class="dash-hero">
-      <h2>Welcome to SmartPay Guard 🛡️</h2>
+      <h2>Welcome to PayTrace</h2>
       <p>Upload your mobile money transaction dataset and our AI engine — combining Isolation Forest and Z-Score analysis — will surface anomalies, profile suspicious senders, and assign risk scores across your entire dataset.</p>
       <button class="go-btn" onclick="showPage('upload')">📥 Upload Dataset to Begin</button>
     </div>
@@ -853,12 +853,12 @@ function downloadCSV(type) {
     const rows = detectionData.top_suspects;
     csv = 'Sender,Risk_Score,Risk_Level,Flagged_Txns,Suspicious_Amount,Fraud_Rate_%\n'
         + rows.map(r => `${r.Sender},${r.Risk_Score},${r.Risk_Level},${r.Flagged_Txns},${r.Suspicious_Amount},${r['Fraud_Rate_%']}`).join('\n');
-    filename = 'smartpay_suspects.csv';
+    filename = 'paytrace_suspects.csv';
   } else {
     const rows = detectionData.flagged_sample || [];
     csv = 'Sender,Receiver,Amount,Date,Fraud_Reason\n'
         + rows.map(r => `"${r.Sender}","${r.Receiver}",${r.Amount},"${r.Date}","${r.Fraud_Reason}"`).join('\n');
-    filename = 'smartpay_flagged_transactions.csv';
+    filename = 'paytrace_flagged_transactions.csv';
   }
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');

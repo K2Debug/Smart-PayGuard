@@ -1,6 +1,6 @@
-# SmartPay Guard
+# PayTrace
 
-AI-powered anomaly detection for mobile money transaction datasets. Upload a file, run detection, and get risk-scored sender profiles, flagged transactions, charts, and CSV exports - all from a single web dashboard.
+**Mobile Money Fraud Detector** — AI-powered anomaly detection for mobile money transaction datasets. Upload a file, run detection, and get risk-scored sender profiles, flagged transactions, charts, and CSV exports from a single web dashboard.
 
 ## Features
 
@@ -39,8 +39,8 @@ A sample file with 100 synthetic records is included: `sample_transactions_100.c
 ## Installation
 
 ```bash
-git clone https://github.com/K2Debug/Smart-PayGuard.git
-cd Smart-PayGuard
+git clone https://github.com/K2Debug/PayTrace-Mobile-Money-Fraud-Detector.git
+cd PayTrace-Mobile-Money-Fraud-Detector
 python -m venv .venv
 
 # Windows
@@ -77,7 +77,7 @@ A transaction is flagged if any ML flag or key rule fires. Senders with flagged 
 ## Project Structure
 
 ```
-smartpay_tracked/
+PayTrace-Mobile-Money-Fraud-Detector/
 |-- app.py
 |-- requirements.txt
 |-- sample_transactions_100.csv

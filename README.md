@@ -1,6 +1,6 @@
 # PayTrace
 
-**Mobile Money Fraud Detector** — AI-powered anomaly detection for mobile money transaction datasets. Upload a file, run detection, and get risk-scored sender profiles, flagged transactions, charts, and CSV exports from a single web dashboard.
+**Mobile Money Fraud Detector**: AI-powered anomaly detection for mobile money transaction datasets. Upload a file, run detection, and get risk-scored sender profiles, flagged transactions, charts, and CSV exports from a single web dashboard.
 
 ## Features
 

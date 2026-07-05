@@ -15,14 +15,14 @@ app = Flask(__name__)
 # ───────────────────────── ML DETECTION LOGIC ─────────────────────────
 def build_reason(row):
     r = []
-    if row["Rule_Anonymous"]:    r.append("Anonymous sender")
-    if row["Rule_SelfTransfer"]: r.append("Self-transfer")
-    if row["Z_Flag"]:            r.append(f"Extreme amount (Z={row['ZScore']:.1f})")
-    if row["Rule_OddHour"]:      r.append(f"Odd hour ({int(row['Hour']):02d}:xx)")
-    if row["Rule_NegBalance"]:   r.append("Severely negative balance")
-    if row["IF_Flag"] and not r: r.append("Multivariate outlier (Isolation Forest)")
-    elif row["IF_Flag"] and r:   r.append("+ IF outlier")
-    return "; ".join(r) if r else "—"
+    if row["Rule_Anonymous"]:    r.append("Sender is anonymous")
+    if row["Rule_SelfTransfer"]: r.append("Sent money to themselves")
+    if row["Z_Flag"]:            r.append(f"Amount much higher than usual ({row['ZScore']:.1f}x spread)")
+    if row["Rule_OddHour"]:      r.append(f"Sent between midnight and 5 AM ({int(row['Hour']):02d}:xx)")
+    if row["Rule_NegBalance"]:   r.append("Account balance very negative after payment")
+    if row["IF_Flag"] and not r: r.append("Unusual pattern detected by AI model")
+    elif row["IF_Flag"] and r:   r.append("Also flagged by AI model")
+    return ", ".join(r) if r else "No specific reason"
 
 def risk_score(row, max_flagged):
     score  = (row["Fraud_Rate_%"] / 100) * 40
@@ -151,10 +151,10 @@ def predict():
 
         all_reasons = []
         for reason_str in df["Fraud_Reason"]:
-            if reason_str != "—":
-                for part in reason_str.split(";"):
+            if reason_str != "No specific reason":
+                for part in reason_str.split(","):
                     p = part.strip()
-                    if p and p != "+ IF outlier":
+                    if p and p != "Also flagged by AI model":
                         all_reasons.append(p)
         from collections import Counter
         reason_counts = dict(Counter(all_reasons).most_common(6))

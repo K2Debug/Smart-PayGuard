@@ -1,0 +1,158 @@
+/* PayTrace design tokens — dark first, light-ready */
+
+:root {
+  /* Brand accents (shared) */
+  --accent:         #C41E3A;
+  --accent-bright:  #F05A28;
+  --accent-dk:      #3D0A12;
+  --accent-hover:   #A01830;
+  --accent-muted:   rgba(196, 30, 58, 0.15);
+  --gradient-brand: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+
+  /* Semantic (shared) */
+  --danger:  #CF222E;
+  --warning: #D4A017;
+  --info:    #0366D6;
+  --success: #2EA44F;
+
+  /* Typography */
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Radii & shadows */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-pill: 30px;
+}
+
+/* Dark mode (default when system prefers dark) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:              #0D1117;
+    --surface:         #12181F;
+    --sidebar:         #06080C;
+    --border:          #1F242C;
+    --text:            #FFFFFF;
+    --text-muted:      #8B949E;
+    --card-bg:         #1A222C;
+    --card-text:       #E6EDF3;
+    --card-sub:        #8B949E;
+    --card-border:     #2D333B;
+    --drop-bg:         #141C24;
+    --drop-border:     var(--accent);
+    --drop-drag-bg:    var(--accent-muted);
+    --table-border:    #2D333B;
+    --table-row-alt:   rgba(255, 255, 255, 0.03);
+    --overlay:         rgba(13, 17, 23, 0.75);
+    --hero-gradient:   linear-gradient(135deg, var(--accent-dk) 0%, var(--sidebar) 100%);
+    --nav-hover:       #12181F;
+    --badge-info-bg:   rgba(3, 102, 214, 0.18);
+    --badge-high-bg:   rgba(207, 34, 46, 0.2);
+    --badge-medium-bg: rgba(212, 160, 23, 0.2);
+    --badge-low-bg:    rgba(46, 164, 79, 0.2);
+    --badge-clean-bg:  rgba(139, 148, 158, 0.15);
+    --error-bg:        rgba(207, 34, 46, 0.12);
+    --placeholder:     #6E7681;
+    --viz-bg:          var(--card-bg);
+    --viz-border:      var(--card-border);
+    --chart-grid:      rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:              #F8F7F4;
+    --surface:         #FFFFFF;
+    --sidebar:         #FFFFFF;
+    --border:          #E5E2DD;
+    --text:            #2D2A26;
+    --text-muted:      #6B6560;
+    --card-bg:         #FFFFFF;
+    --card-text:       #2D2A26;
+    --card-sub:        #6B6560;
+    --card-border:     #E5E2DD;
+    --drop-bg:         #FAFAF8;
+    --drop-border:     var(--accent);
+    --drop-drag-bg:    var(--accent-muted);
+    --table-border:    #E5E2DD;
+    --table-row-alt:   rgba(0, 0, 0, 0.02);
+    --overlay:         rgba(45, 42, 38, 0.5);
+    --hero-gradient:   linear-gradient(135deg, #FFF5F3 0%, var(--surface) 100%);
+    --nav-hover:       #F3F1ED;
+    --badge-info-bg:   #EEF4FF;
+    --badge-high-bg:   #ffeef0;
+    --badge-medium-bg: #fff8e1;
+    --badge-low-bg:    #e6f4ea;
+    --badge-clean-bg:  #f0f0f0;
+    --error-bg:        #ffeef0;
+    --placeholder:     #999999;
+    --viz-bg:          var(--card-bg);
+    --viz-border:      var(--card-border);
+    --chart-grid:      rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Manual override: dark */
+[data-theme="dark"] {
+  --bg:              #0D1117;
+  --surface:         #12181F;
+  --sidebar:         #06080C;
+  --border:          #1F242C;
+  --text:            #FFFFFF;
+  --text-muted:      #8B949E;
+  --card-bg:         #1A222C;
+  --card-text:       #E6EDF3;
+  --card-sub:        #8B949E;
+  --card-border:     #2D333B;
+  --drop-bg:         #141C24;
+  --drop-border:     var(--accent);
+  --drop-drag-bg:    var(--accent-muted);
+  --table-border:    #2D333B;
+  --table-row-alt:   rgba(255, 255, 255, 0.03);
+  --overlay:         rgba(13, 17, 23, 0.75);
+  --hero-gradient:   linear-gradient(135deg, var(--accent-dk) 0%, var(--sidebar) 100%);
+  --nav-hover:       #12181F;
+  --badge-info-bg:   rgba(3, 102, 214, 0.18);
+  --badge-high-bg:   rgba(207, 34, 46, 0.2);
+  --badge-medium-bg: rgba(212, 160, 23, 0.2);
+  --badge-low-bg:    rgba(46, 164, 79, 0.2);
+  --badge-clean-bg:  rgba(139, 148, 158, 0.15);
+  --error-bg:        rgba(207, 34, 46, 0.12);
+  --placeholder:     #6E7681;
+  --viz-bg:          var(--card-bg);
+  --viz-border:      var(--card-border);
+  --chart-grid:      rgba(255, 255, 255, 0.08);
+}
+
+/* Manual override: light */
+[data-theme="light"] {
+  --bg:              #F8F7F4;
+  --surface:         #FFFFFF;
+  --sidebar:         #FFFFFF;
+  --border:          #E5E2DD;
+  --text:            #2D2A26;
+  --text-muted:      #6B6560;
+  --card-bg:         #FFFFFF;
+  --card-text:       #2D2A26;
+  --card-sub:        #6B6560;
+  --card-border:     #E5E2DD;
+  --drop-bg:         #FAFAF8;
+  --drop-border:     var(--accent);
+  --drop-drag-bg:    var(--accent-muted);
+  --table-border:    #E5E2DD;
+  --table-row-alt:   rgba(0, 0, 0, 0.02);
+  --overlay:         rgba(45, 42, 38, 0.5);
+  --hero-gradient:   linear-gradient(135deg, #FFF5F3 0%, var(--surface) 100%);
+  --nav-hover:       #F3F1ED;
+  --badge-info-bg:   #EEF4FF;
+  --badge-high-bg:   #ffeef0;
+  --badge-medium-bg: #fff8e1;
+  --badge-low-bg:    #e6f4ea;
+  --badge-clean-bg:  #f0f0f0;
+  --error-bg:        #ffeef0;
+  --placeholder:     #999999;
+  --viz-bg:          var(--card-bg);
+  --viz-border:      var(--card-border);
+  --chart-grid:      rgba(0, 0, 0, 0.08);
+}

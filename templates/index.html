@@ -3,354 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PayTrace – Mobile Money Fraud Detector</title>
-  <style>
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
-    :root {
-      --bg:       #0d1117;
-      --sidebar:  #06080c;
-      --border:   #1f242c;
-      --green:    #2ea44f;
-      --green-dk: #0f3d1e;
-      --green-bg: #008000;
-      --text:     #ffffff;
-      --muted:    #8b949e;
-      --card-bg:  #ffffff;
-      --card-txt: #333333;
-      --red:      #cf222e;
-      --amber:    #d4a017;
-      --blue:     #0366d6;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, sans-serif;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    /* ── SIDEBAR ── */
-    .sidebar {
-      width: 230px;
-      min-width: 230px;
-      background: var(--sidebar);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 20px 16px;
-    }
-    .logo { font-size: 16px; font-weight: 700; margin-bottom: 28px; }
-    .nav { list-style: none; display: flex; flex-direction: column; gap: 4px; }
-    .nav li a {
-      display: block;
-      padding: 9px 12px;
-      border-radius: 6px;
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-    }
-    .nav li a:hover { background: #12181f; color: var(--text); }
-    .nav li.active a { background: var(--green-dk); color: var(--green); font-weight: 700; }
-    .sidebar-footer { font-size: 10px; color: var(--muted); }
-    .sidebar-footer strong { display: block; color: var(--text); font-size: 12px; margin-bottom: 4px; }
-
-    /* ── MAIN ── */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 28px 14px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .topbar h1 { font-size: 20px; }
-    .topbar p  { font-size: 10px; color: var(--green); text-transform: uppercase; margin-top: 3px; letter-spacing: .06em; }
-    .user-badge { font-size: 13px; color: var(--muted); }
-
-    /* ── PAGES ── */
-    .page { display: none; flex: 1; overflow-y: auto; padding: 24px 28px; }
-    .page.active { display: block; }
-
-    /* ── CARD ── */
-    .card {
-      background: var(--card-bg);
-      color: var(--card-txt);
-      border-radius: 12px;
-      padding: 24px;
-    }
-    .card-title { font-size: 14px; font-weight: 700; color: var(--green-bg); margin-bottom: 4px; text-transform: uppercase; }
-    .card-sub   { font-size: 12px; color: #666; margin-bottom: 18px; }
-
-    /* ── UPLOAD PAGE ── */
-    .upload-row { display: flex; gap: 18px; }
-
-    .drop-zone {
-      flex: 1;
-      border: 2px dashed var(--green);
-      border-radius: 8px;
-      background: #f6f8fa;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 36px 20px;
-      text-align: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .drop-zone.drag-over { background: #e8f5e9; border-color: #006400; }
-    .drop-zone .icon { font-size: 38px; }
-    .drop-zone p { font-size: 13px; color: #555; }
-    .drop-zone .hint { font-size: 11px; color: #999; }
-
-    #fileInput { display: none; }
-    .browse-btn {
-      background: var(--green-bg);
-      color: #fff;
-      border: none;
-      padding: 9px 22px;
-      font-size: 13px;
-      font-weight: 700;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .browse-btn:hover { background: #006600; }
-
-    .preview-box {
-      flex: 1.6;
-      border: 1px solid #e1e4e8;
-      border-radius: 8px;
-      padding: 14px;
-      background: #fff;
-      overflow: hidden;
-    }
-    .preview-title { font-size: 12px; font-weight: 700; color: var(--green-bg); margin-bottom: 8px; }
-    .file-badge {
-      background: #f1f8ff;
-      color: var(--blue);
-      padding: 6px 10px;
-      border-radius: 5px;
-      font-size: 11px;
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 10px; }
-    .data-table th { background: var(--green-bg); color: #fff; padding: 6px 8px; text-align: left; }
-    .data-table td { padding: 6px 8px; border-bottom: 1px solid #e1e4e8; color: #333; }
-    .table-note { font-size: 10px; color: var(--green-bg); font-weight: 700; margin-top: 6px; }
-
-    .run-wrap { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
-    .run-btn {
-      background: var(--green-bg);
-      color: #fff;
-      border: none;
-      padding: 14px 0;
-      width: 50%;
-      font-size: 16px;
-      font-weight: 700;
-      border-radius: 30px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .run-btn:hover  { background: #006600; transform: scale(1.01); }
-    .run-btn:active { transform: scale(0.99); }
-    .run-btn:disabled { background: #aaa; cursor: not-allowed; transform: none; }
-    .run-hint { font-size: 11px; color: var(--muted); margin-top: 7px; }
-
-    /* ── SPINNER ── */
-    .spinner-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(13,17,23,.75);
-      z-index: 100;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-    }
-    .spinner-overlay.show { display: flex; }
-    .spinner {
-      width: 48px; height: 48px;
-      border: 4px solid #1f242c;
-      border-top-color: var(--green);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner-label { color: var(--green); font-size: 14px; font-weight: 700; }
-
-    /* ── ERROR BANNER ── */
-    .error-banner {
-      display: none;
-      background: #ffeef0;
-      border: 1px solid var(--red);
-      color: var(--red);
-      padding: 10px 14px;
-      border-radius: 6px;
-      font-size: 12px;
-      margin-bottom: 14px;
-    }
-    .error-banner.show { display: block; }
-
-    /* ── RESULTS PAGE ── */
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: var(--card-bg);
-      border-radius: 10px;
-      padding: 16px 18px;
-      color: var(--card-txt);
-    }
-    .stat-card .label { font-size: 10px; text-transform: uppercase; color: #666; letter-spacing: .05em; }
-    .stat-card .value { font-size: 26px; font-weight: 700; margin: 4px 0 2px; }
-    .stat-card .sub   { font-size: 10px; color: #888; }
-    .stat-card.red   .value { color: var(--red); }
-    .stat-card.amber .value { color: var(--amber); }
-    .stat-card.green .value { color: var(--green-bg); }
-    .stat-card.blue  .value { color: var(--blue); }
-
-    .results-row { display: flex; gap: 16px; margin-bottom: 16px; }
-    .results-row .card { flex: 1; }
-
-    /* Risk badge */
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .badge.HIGH   { background: #ffeef0; color: var(--red); }
-    .badge.MEDIUM { background: #fff8e1; color: var(--amber); }
-    .badge.LOW    { background: #e6f4ea; color: var(--green-bg); }
-    .badge.CLEAN  { background: #f0f0f0; color: #555; }
-
-    /* Bar chart */
-    .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 11px; color: #444; }
-    .bar-label { width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
-    .bar-track { flex: 1; background: #e1e4e8; border-radius: 3px; height: 10px; }
-    .bar-fill  { height: 10px; border-radius: 3px; background: var(--green-bg); transition: width 0.6s ease; }
-    .bar-fill.red   { background: var(--red); }
-    .bar-fill.amber { background: var(--amber); }
-    .bar-count { width: 30px; text-align: right; color: #666; }
-
-    /* ── VISUALISATIONS PAGE ── */
-    .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .viz-card { background: var(--card-bg); border-radius: 10px; padding: 18px; }
-    .viz-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--green-bg); margin-bottom: 14px; }
-    canvas { max-width: 100%; }
-
-    /* ── ALERT LOGS ── */
-    .alert-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 0; border-bottom: 1px solid #e1e4e8;
-      font-size: 12px; color: #333;
-    }
-    .alert-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
-    .alert-dot.red { background: var(--red); }
-    .alert-dot.amber { background: var(--amber); }
-    .alert-dot.green { background: var(--green-bg); }
-    .alert-sender { font-weight: 700; }
-    .alert-reason { color: #666; font-size: 11px; }
-
-    /* ── DASHBOARD ── */
-    .dash-hero {
-      background: linear-gradient(135deg, #0f3d1e 0%, #06080c 100%);
-      border-radius: 12px;
-      padding: 32px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border);
-    }
-    .dash-hero h2 { font-size: 22px; margin-bottom: 8px; }
-    .dash-hero p  { color: var(--muted); font-size: 13px; max-width: 520px; line-height: 1.6; }
-    .dash-hero .go-btn {
-      margin-top: 18px;
-      background: var(--green-bg);
-      color: #fff;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .feature-card {
-      background: #12181f;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 18px;
-    }
-    .feature-card .f-icon { font-size: 24px; margin-bottom: 8px; }
-    .feature-card h4 { font-size: 13px; margin-bottom: 4px; }
-    .feature-card p  { font-size: 11px; color: var(--muted); line-height: 1.5; }
-
-    /* ── REPORTS ── */
-    .report-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 0; border-bottom: 1px solid #e1e4e8; font-size: 12px; color: #333;
-    }
-    .dl-btn {
-      background: var(--green-bg); color: #fff; border: none;
-      padding: 5px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;
-    }
-
-    /* Scrollable table wrapper */
-    .tbl-wrap { overflow-x: auto; }
-
-    /* empty state */
-    .empty-state { text-align: center; padding: 40px; color: #aaa; font-size: 13px; }
-    .empty-state .e-icon { font-size: 36px; margin-bottom: 10px; }
-  </style>
+  <title>PayTrace, Smart Transaction Security</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}" />
 </head>
 <body>
 
 <!-- ══ SIDEBAR ══════════════════════════════════════════════════════════ -->
 <nav class="sidebar">
   <div>
-    <div class="logo">🔍 PAYTRACE</div>
+    <a class="logo-block" href="#" onclick="showPage('dashboard'); return false;">
+      <img src="{{ url_for('static', filename='img/paytrace-logo.png') }}" alt="PayTrace" />
+      <span class="logo-text">PAYTRACE</span>
+    </a>
     <ul class="nav">
-      <li data-page="dashboard"><a href="#">🏠 Dashboard</a></li>
-      <li data-page="upload" class="active"><a href="#">📥 Upload Dataset</a></li>
-      <li data-page="results"><a href="#">📈 Results</a></li>
-      <li data-page="visualizations"><a href="#">📊 Visualizations</a></li>
-      <li data-page="reports"><a href="#">📄 Reports</a></li>
-      <li data-page="alerts"><a href="#">🔔 Alert Logs</a></li>
+      <li data-page="dashboard" class="active">
+        <a href="#"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+      </li>
+      <li data-page="upload">
+        <a href="#"><i data-lucide="upload"></i><span>Upload &amp; Detect</span></a>
+      </li>
+      <li data-page="analysis" class="nav-locked" id="navAnalysis">
+        <a href="#"><i data-lucide="bar-chart-2"></i><span>Analysis</span></a>
+      </li>
     </ul>
   </div>
   <div class="sidebar-footer">
     <strong>PAYTRACE</strong>
-    Tracing risk. Protecting payments.
+    Smart Transaction Security
   </div>
 </nav>
 
 <!-- ══ MAIN ═══════════════════════════════════════════════════════════ -->
 <div class="main">
   <header class="topbar">
-    <div>
-      <h1>PAYTRACE</h1>
-      <p>— Mobile Money Fraud Detector —</p>
+    <div class="topbar-brand">
+      <img src="{{ url_for('static', filename='img/paytrace-logo.png') }}" alt="" aria-hidden="true" />
+      <div>
+        <h1>PAYTRACE</h1>
+        <p>Smart Transaction Security</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme"></button>
     </div>
   </header>
 
@@ -364,45 +64,48 @@
   <section class="page active" id="page-dashboard">
     <div class="dash-hero">
       <h2>Welcome to PayTrace</h2>
-      <p>Upload your mobile money transaction dataset and our AI engine — combining Isolation Forest and Z-Score analysis — will surface anomalies, profile suspicious senders, and assign risk scores across your entire dataset.</p>
-      <button class="go-btn" onclick="showPage('upload')">📥 Upload Dataset to Begin</button>
+      <p>Upload your mobile money transaction dataset and our AI engine, combining Isolation Forest and Z-Score analysis, will surface anomalies, profile suspicious senders, and assign risk scores across your entire dataset.</p>
+      <button class="btn btn-accent" onclick="showPage('upload')">
+        <i data-lucide="upload"></i>
+        Upload Dataset to Begin
+      </button>
     </div>
     <div class="feature-grid">
       <div class="feature-card">
-        <div class="f-icon">🤖</div>
+        <div class="f-icon"><i data-lucide="brain-circuit"></i></div>
         <h4>Isolation Forest</h4>
         <p>Unsupervised ML model that detects multivariate outliers in transaction patterns.</p>
       </div>
       <div class="feature-card">
-        <div class="f-icon">📐</div>
+        <div class="f-icon"><i data-lucide="sigma"></i></div>
         <h4>Z-Score Analysis</h4>
         <p>Flags extreme transaction amounts statistically deviating from normal behaviour.</p>
       </div>
       <div class="feature-card">
-        <div class="f-icon">📋</div>
+        <div class="f-icon"><i data-lucide="list-checks"></i></div>
         <h4>Rule Engine</h4>
         <p>Business rules catch self-transfers, anonymous senders, odd-hour activity, and negative balances.</p>
       </div>
       <div class="feature-card">
-        <div class="f-icon">👤</div>
+        <div class="f-icon"><i data-lucide="user-search"></i></div>
         <h4>Sender Profiling</h4>
-        <p>Every sender gets a composite Risk Score (0–100) and Risk Level classification.</p>
+        <p>Every sender gets a composite Risk Score (0 to 100) and Risk Level classification.</p>
       </div>
       <div class="feature-card">
-        <div class="f-icon">📊</div>
+        <div class="f-icon"><i data-lucide="line-chart"></i></div>
         <h4>Visual Insights</h4>
         <p>Charts for risk distribution, flag reasons, and top suspect rankings.</p>
       </div>
       <div class="feature-card">
-        <div class="f-icon">📄</div>
+        <div class="f-icon"><i data-lucide="file-down"></i></div>
         <h4>Export Reports</h4>
         <p>Download CSV results of flagged transactions and suspect profiles.</p>
       </div>
     </div>
   </section>
 
-  <!-- ── UPLOAD ── -->
-  <section class="page active" id="page-upload">
+  <!-- ── UPLOAD & DETECT ── -->
+  <section class="page" id="page-upload">
     <div class="card">
       <div class="card-title">Upload Dataset</div>
       <div class="card-sub">Upload your transaction dataset to detect anomalies and potential fraud.</div>
@@ -410,26 +113,27 @@
       <div id="errorBanner" class="error-banner"></div>
 
       <div class="upload-row">
-        <!-- Drop zone -->
         <div class="drop-zone" id="dropZone">
-          <div class="icon">☁️</div>
-          <p><strong>DRAG &amp; DROP YOUR FILE HERE</strong></p>
+          <div class="icon-circle"><i data-lucide="cloud-upload"></i></div>
+          <p><strong>Drag &amp; drop your file here</strong></p>
           <p class="hint">or</p>
-          <button class="browse-btn" onclick="document.getElementById('fileInput').click()">BROWSE FILES</button>
+          <button class="btn btn-accent browse-btn" type="button" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">Browse Files</button>
           <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json" />
           <p class="hint">Supported: CSV, Excel (XLSX), JSON · Max 200 MB</p>
         </div>
 
-        <!-- Preview -->
         <div class="preview-box">
-          <div class="preview-title">👁️ DATASET PREVIEW</div>
+          <div class="preview-title">
+            <i data-lucide="eye"></i>
+            Dataset Preview
+          </div>
           <div id="fileBadge" class="file-badge" style="display:none">
-            <span id="fileName">—</span>
-            <strong id="fileSize">—</strong>
+            <span id="fileName" class="file-name"><span>N/A</span></span>
+            <strong id="fileSize">N/A</strong>
           </div>
           <div id="previewWrap">
             <div class="empty-state">
-              <div class="e-icon">📂</div>
+              <div class="e-icon"><i data-lucide="folder-open"></i></div>
               No file loaded yet. Upload a dataset to preview.
             </div>
           </div>
@@ -437,435 +141,185 @@
       </div>
 
       <div class="run-wrap">
-        <button class="run-btn" id="runBtn" onclick="runDetection()" disabled>▶ Run Detection</button>
+        <button class="btn btn-gradient" id="runBtn" onclick="runDetection()" disabled>
+          <i data-lucide="play"></i>
+          Run Detection
+        </button>
         <p class="run-hint">Upload a file first, then click to run anomaly detection</p>
       </div>
     </div>
   </section>
 
-  <!-- ── RESULTS ── -->
-  <section class="page" id="page-results">
-    <div id="resultsEmpty" class="empty-state" style="margin-top:60px">
-      <div class="e-icon">📈</div>
+  <!-- ── ANALYSIS HUB ── -->
+  <section class="page" id="page-analysis">
+    <div id="analysisEmpty" class="empty-state" style="margin-top:40px">
+      <div class="e-icon"><i data-lucide="bar-chart-2"></i></div>
       No results yet. Upload a dataset and run detection first.
     </div>
-    <div id="resultsContent" style="display:none">
-      <!-- stat grid -->
-      <div class="stat-grid">
-        <div class="stat-card blue">
-          <div class="label">Total Transactions</div>
-          <div class="value" id="rTotal">—</div>
-          <div class="sub">in dataset</div>
-        </div>
-        <div class="stat-card red">
-          <div class="label">Flagged Transactions</div>
-          <div class="value" id="rFlagged">—</div>
-          <div class="sub" id="rPct">— of total</div>
-        </div>
-        <div class="stat-card amber">
-          <div class="label">Total Suspects</div>
-          <div class="value" id="rSuspects">—</div>
-          <div class="sub">unique senders</div>
-        </div>
-        <div class="stat-card red">
-          <div class="label">High Risk Senders</div>
-          <div class="value" id="rHigh">—</div>
-          <div class="sub">require immediate review</div>
-        </div>
+
+    <div id="analysisContent" style="display:none">
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="overview">
+          <i data-lucide="layout-list"></i> Overview
+        </button>
+        <button class="tab-btn" data-tab="charts">
+          <i data-lucide="pie-chart"></i> Charts
+        </button>
+        <button class="tab-btn" data-tab="alerts">
+          <i data-lucide="bell"></i> Alerts
+        </button>
+        <button class="tab-btn" data-tab="export">
+          <i data-lucide="file-text"></i> Export
+        </button>
       </div>
 
-      <div class="results-row">
-        <!-- Top Suspects Table -->
-        <div class="card" style="flex:1.6">
-          <div class="card-title">Top Suspects by Risk Score</div>
+      <!-- Overview -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="stat-grid">
+          <div class="stat-card blue">
+            <div class="label">Total Transactions</div>
+            <div class="value" id="rTotal">N/A</div>
+            <div class="sub">in dataset</div>
+          </div>
+          <div class="stat-card red">
+            <div class="label">Flagged Transactions</div>
+            <div class="value" id="rFlagged">N/A</div>
+            <div class="sub" id="rPct">N/A</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="label">Total Suspects</div>
+            <div class="value" id="rSuspects">N/A</div>
+            <div class="sub">unique senders</div>
+          </div>
+          <div class="stat-card red">
+            <div class="label">High Risk Senders</div>
+            <div class="value" id="rHigh">N/A</div>
+            <div class="sub">require immediate review</div>
+          </div>
+        </div>
+
+        <div class="results-row">
+          <div class="card" style="flex:1.6">
+            <div class="card-title">Top Suspects by Risk Score</div>
+            <div class="tbl-wrap">
+              <table class="data-table" id="suspectsTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Sender</th>
+                    <th>Risk Score</th>
+                    <th>Risk Level</th>
+                    <th>Flagged Txns</th>
+                    <th>Suspicious Amount</th>
+                    <th>Fraud Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="suspectsBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card" style="flex:1">
+            <div class="card-title">Risk Level Breakdown</div>
+            <div id="riskBreakdown"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Flagged Transaction Sample (first 20)</div>
           <div class="tbl-wrap">
-            <table class="data-table" id="suspectsTable">
+            <table class="data-table" id="flaggedTable">
               <thead>
                 <tr>
-                  <th>#</th>
                   <th>Sender</th>
-                  <th>Risk Score</th>
-                  <th>Risk Level</th>
-                  <th>Flagged Txns</th>
-                  <th>Suspicious Amount</th>
-                  <th>Fraud Rate</th>
+                  <th>Receiver</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Reason</th>
                 </tr>
               </thead>
-              <tbody id="suspectsBody"></tbody>
+              <tbody id="flaggedBody"></tbody>
             </table>
           </div>
         </div>
+      </div>
 
-        <!-- Risk breakdown -->
-        <div class="card" style="flex:1">
-          <div class="card-title">Risk Level Breakdown</div>
-          <div id="riskBreakdown"></div>
+      <!-- Charts -->
+      <div class="tab-panel" id="tab-charts">
+        <div id="chartsEmpty" class="empty-state">
+          <div class="e-icon"><i data-lucide="pie-chart"></i></div>
+          Run detection first to generate charts.
         </div>
-      </div>
-
-      <!-- Flagged transactions sample -->
-      <div class="card">
-        <div class="card-title">Flagged Transaction Sample (first 20)</div>
-        <div class="tbl-wrap">
-          <table class="data-table" id="flaggedTable">
-            <thead>
-              <tr>
-                <th>Sender</th>
-                <th>Receiver</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Reason</th>
-              </tr>
-            </thead>
-            <tbody id="flaggedBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── VISUALIZATIONS ── -->
-  <section class="page" id="page-visualizations">
-    <div id="vizEmpty" class="empty-state" style="margin-top:60px">
-      <div class="e-icon">📊</div>
-      Run detection first to generate charts.
-    </div>
-    <div id="vizContent" class="viz-grid" style="display:none">
-      <div class="viz-card">
-        <div class="viz-title">Risk Level Distribution</div>
-        <canvas id="chartRisk"></canvas>
-      </div>
-      <div class="viz-card">
-        <div class="viz-title">Flag Reason Breakdown</div>
-        <canvas id="chartReasons"></canvas>
-      </div>
-      <div class="viz-card">
-        <div class="viz-title">Transaction Status Split</div>
-        <canvas id="chartSplit"></canvas>
-      </div>
-      <div class="viz-card">
-        <div class="viz-title">Top 5 Suspects — Risk Score</div>
-        <canvas id="chartTop5"></canvas>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── REPORTS ── -->
-  <section class="page" id="page-reports">
-    <div class="card">
-      <div class="card-title">Export Reports</div>
-      <div class="card-sub">Download detection results as CSV files.</div>
-      <div id="reportsEmpty" class="empty-state">
-        <div class="e-icon">📄</div>
-        Run detection first to generate downloadable reports.
-      </div>
-      <div id="reportsContent" style="display:none">
-        <div class="report-row">
-          <div>
-            <strong>Top Suspects Report</strong>
-            <div style="font-size:11px;color:#666">All flagged senders with risk scores and profiles</div>
+        <div id="chartsContent" class="viz-grid" style="display:none">
+          <div class="viz-card">
+            <div class="viz-title">Risk Level Distribution</div>
+            <canvas id="chartRisk"></canvas>
           </div>
-          <button class="dl-btn" onclick="downloadCSV('suspects')">⬇ Download CSV</button>
-        </div>
-        <div class="report-row">
-          <div>
-            <strong>Flagged Transactions Sample</strong>
-            <div style="font-size:11px;color:#666">First 20 flagged transactions with reasons</div>
+          <div class="viz-card">
+            <div class="viz-title">Flag Reason Breakdown</div>
+            <canvas id="chartReasons"></canvas>
           </div>
-          <button class="dl-btn" onclick="downloadCSV('flagged')">⬇ Download CSV</button>
+          <div class="viz-card">
+            <div class="viz-title">Transaction Status Split</div>
+            <canvas id="chartSplit"></canvas>
+          </div>
+          <div class="viz-card">
+            <div class="viz-title">Top 5 Suspects, Risk Score</div>
+            <canvas id="chartTop5"></canvas>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ── ALERT LOGS ── -->
-  <section class="page" id="page-alerts">
-    <div class="card">
-      <div class="card-title">Alert Logs</div>
-      <div class="card-sub">Suspicious senders flagged in the latest detection run.</div>
-      <div id="alertsEmpty" class="empty-state">
-        <div class="e-icon">🔔</div>
-        No alerts yet. Run detection to generate alerts.
+      <!-- Alerts -->
+      <div class="tab-panel" id="tab-alerts">
+        <div class="card">
+          <div class="card-title">Alert Logs</div>
+          <div class="card-sub">Suspicious senders flagged in the latest detection run.</div>
+          <div id="alertsEmpty" class="empty-state">
+            <div class="e-icon"><i data-lucide="bell"></i></div>
+            No alerts yet. Run detection to generate alerts.
+          </div>
+          <div id="alertsList"></div>
+        </div>
       </div>
-      <div id="alertsList"></div>
+
+      <!-- Export -->
+      <div class="tab-panel" id="tab-export">
+        <div class="card">
+          <div class="card-title">Export Reports</div>
+          <div class="card-sub">Download detection results as CSV files.</div>
+          <div id="exportEmpty" class="empty-state">
+            <div class="e-icon"><i data-lucide="file-text"></i></div>
+            Run detection first to generate downloadable reports.
+          </div>
+          <div id="exportContent" style="display:none">
+            <div class="report-row">
+              <div>
+                <strong>Top Suspects Report</strong>
+                <div class="report-desc">Top flagged senders with risk scores and profiles</div>
+              </div>
+              <button class="btn btn-sm" onclick="downloadCSV('suspects')">
+                <i data-lucide="download"></i> Download CSV
+              </button>
+            </div>
+            <div class="report-row">
+              <div>
+                <strong>Flagged Transactions Sample</strong>
+                <div class="report-desc">First 20 flagged transactions with reasons</div>
+              </div>
+              <button class="btn btn-sm" onclick="downloadCSV('flagged')">
+                <i data-lucide="download"></i> Download CSV
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
 </div><!-- /main -->
 
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script>
-// ── State ──
-let uploadedFile   = null;
-let detectionData  = null;
-let charts         = {};
-
-// ── Navigation ──
-document.querySelectorAll('.nav li').forEach(li => {
-  li.addEventListener('click', e => {
-    e.preventDefault();
-    showPage(li.dataset.page);
-  });
-});
-
-function showPage(name) {
-  document.querySelectorAll('.nav li').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const li = document.querySelector(`.nav li[data-page="${name}"]`);
-  if (li) li.classList.add('active');
-  document.getElementById('page-' + name).classList.add('active');
-}
-
-// ── File Upload ──
-const dropZone  = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  const f = e.dataTransfer.files[0];
-  if (f) handleFile(f);
-});
-fileInput.addEventListener('change', () => {
-  if (fileInput.files[0]) handleFile(fileInput.files[0]);
-});
-
-function handleFile(file) {
-  uploadedFile = file;
-  const kb = (file.size / 1024).toFixed(1);
-  document.getElementById('fileName').textContent = '📄 ' + file.name;
-  document.getElementById('fileSize').textContent = kb + ' KB ✅';
-  document.getElementById('fileBadge').style.display = 'flex';
-  document.getElementById('runBtn').disabled = false;
-  document.querySelector('.run-hint').textContent = 'Click to run anomaly detection on your dataset';
-  showError('');
-
-  // Read & preview
-  const reader = new FileReader();
-  reader.onload = e => {
-    const text = e.target.result;
-    const lines = text.split('\n').filter(l => l.trim());
-    const headers = lines[0].split(',');
-    const rows = lines.slice(1, 6);
-    let html = `<table class="data-table"><thead><tr>${headers.slice(0,6).map(h=>`<th>${h.trim()}</th>`).join('')}</tr></thead><tbody>`;
-    rows.forEach(r => {
-      const cells = r.split(',');
-      html += `<tr>${cells.slice(0,6).map(c=>`<td>${c.trim()}</td>`).join('')}</tr>`;
-    });
-    html += `</tbody></table><div class="table-note">Showing 5 of ${lines.length-1} rows</div>`;
-    document.getElementById('previewWrap').innerHTML = html;
-  };
-  if (file.name.endsWith('.csv')) reader.readAsText(file);
-  else {
-    document.getElementById('previewWrap').innerHTML = `<div class="empty-state"><div class="e-icon">📊</div>Preview not available for this format. File ready to upload.</div>`;
-  }
-}
-
-function showError(msg) {
-  const b = document.getElementById('errorBanner');
-  if (msg) { b.textContent = '⚠️ ' + msg; b.classList.add('show'); }
-  else b.classList.remove('show');
-}
-
-// ── Run Detection ──
-async function runDetection() {
-  if (!uploadedFile) return;
-  showError('');
-  document.getElementById('spinner').classList.add('show');
-  document.getElementById('runBtn').disabled = true;
-
-  const form = new FormData();
-  form.append('file', uploadedFile);
-
-  try {
-    const res  = await fetch('/predict', { method: 'POST', body: form });
-    const data = await res.json();
-
-    if (data.error) {
-      showError(data.error);
-    } else {
-      detectionData = data;
-      renderResults(data);
-      renderCharts(data);
-      renderAlerts(data);
-      renderReports();
-      showPage('results');
-    }
-  } catch (err) {
-    showError('Network error — is the server running? ' + err.message);
-  } finally {
-    document.getElementById('spinner').classList.remove('show');
-    document.getElementById('runBtn').disabled = false;
-  }
-}
-
-// ── Render Results ──
-function renderResults(d) {
-  document.getElementById('resultsEmpty').style.display   = 'none';
-  document.getElementById('resultsContent').style.display = 'block';
-
-  document.getElementById('rTotal').textContent   = d.total_transactions.toLocaleString();
-  document.getElementById('rFlagged').textContent = d.flagged_transactions.toLocaleString();
-  document.getElementById('rPct').textContent     = d.fraud_percentage + '% of total';
-  document.getElementById('rSuspects').textContent = d.total_suspects.toLocaleString();
-  document.getElementById('rHigh').textContent    = d.high_risk_count.toLocaleString();
-
-  // Suspects table
-  const sb = document.getElementById('suspectsBody');
-  sb.innerHTML = '';
-  d.top_suspects.forEach((s, i) => {
-    const lvl = s.Risk_Level.split(' ')[0];
-    sb.innerHTML += `<tr>
-      <td>${i+1}</td>
-      <td>${s.Sender}</td>
-      <td><strong>${s.Risk_Score}</strong>/100</td>
-      <td><span class="badge ${lvl}">${s.Risk_Level}</span></td>
-      <td>${s.Flagged_Txns}</td>
-      <td>TZS ${Number(s.Suspicious_Amount).toLocaleString(undefined,{maximumFractionDigits:0})}</td>
-      <td>${s['Fraud_Rate_%']}%</td>
-    </tr>`;
-  });
-
-  // Risk breakdown bars
-  const maxSusp = Math.max(d.high_risk_count, d.medium_risk_count, d.low_risk_count, 1);
-  document.getElementById('riskBreakdown').innerHTML = `
-    ${bar('HIGH RISK',   d.high_risk_count,   maxSusp, 'red')}
-    ${bar('MEDIUM RISK', d.medium_risk_count, maxSusp, 'amber')}
-    ${bar('LOW RISK',    d.low_risk_count,    maxSusp, '')}
-  `;
-
-  // Flagged sample
-  const fb = document.getElementById('flaggedBody');
-  fb.innerHTML = '';
-  (d.flagged_sample || []).forEach(t => {
-    fb.innerHTML += `<tr>
-      <td>${t.Sender}</td><td>${t.Receiver}</td>
-      <td>TZS ${Number(t.Amount).toLocaleString(undefined,{maximumFractionDigits:0})}</td>
-      <td>${t.Date}</td><td>${t.Fraud_Reason}</td>
-    </tr>`;
-  });
-}
-
-function bar(label, count, max, cls) {
-  const pct = Math.round((count / max) * 100);
-  return `<div class="bar-row">
-    <span class="bar-label">${label}</span>
-    <div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
-    <span class="bar-count">${count}</span>
-  </div>`;
-}
-
-// ── Render Charts ──
-function renderCharts(d) {
-  document.getElementById('vizEmpty').style.display   = 'none';
-  document.getElementById('vizContent').style.display = 'grid';
-
-  Object.values(charts).forEach(c => c.destroy());
-  charts = {};
-
-  const GREEN = '#008000', RED = '#cf222e', AMBER = '#d4a017', BLUE = '#0366d6', GREY = '#8b949e';
-
-  // Chart 1 – Risk distribution (doughnut)
-  charts.risk = new Chart(document.getElementById('chartRisk'), {
-    type: 'doughnut',
-    data: {
-      labels: ['High Risk', 'Medium Risk', 'Low Risk'],
-      datasets: [{ data: [d.high_risk_count, d.medium_risk_count, d.low_risk_count],
-        backgroundColor: [RED, AMBER, GREEN], borderWidth: 0 }]
-    },
-    options: { plugins: { legend: { position: 'bottom' } }, cutout: '60%' }
-  });
-
-  // Chart 2 – Reason breakdown (bar)
-  const reasons = d.reason_breakdown || {};
-  charts.reasons = new Chart(document.getElementById('chartReasons'), {
-    type: 'bar',
-    data: {
-      labels: Object.keys(reasons),
-      datasets: [{ label: 'Count', data: Object.values(reasons),
-        backgroundColor: BLUE, borderRadius: 4 }]
-    },
-    options: { indexAxis: 'y', plugins: { legend: { display: false } },
-      scales: { x: { beginAtZero: true } } }
-  });
-
-  // Chart 3 – Transaction split (pie)
-  const clean = d.total_transactions - d.flagged_transactions;
-  charts.split = new Chart(document.getElementById('chartSplit'), {
-    type: 'pie',
-    data: {
-      labels: ['Flagged', 'Clean'],
-      datasets: [{ data: [d.flagged_transactions, clean],
-        backgroundColor: [RED, GREEN], borderWidth: 0 }]
-    },
-    options: { plugins: { legend: { position: 'bottom' } } }
-  });
-
-  // Chart 4 – Top 5 suspects (horizontal bar)
-  const top5 = (d.top_suspects || []).slice(0, 5);
-  charts.top5 = new Chart(document.getElementById('chartTop5'), {
-    type: 'bar',
-    data: {
-      labels: top5.map(s => s.Sender),
-      datasets: [{ label: 'Risk Score', data: top5.map(s => s.Risk_Score),
-        backgroundColor: top5.map(s => s.Risk_Level.startsWith('HIGH') ? RED : s.Risk_Level.startsWith('MEDIUM') ? AMBER : GREEN),
-        borderRadius: 4 }]
-    },
-    options: {
-      indexAxis: 'y',
-      plugins: { legend: { display: false } },
-      scales: { x: { beginAtZero: true, max: 100 } }
-    }
-  });
-}
-
-// ── Render Alerts ──
-function renderAlerts(d) {
-  const list = document.getElementById('alertsList');
-  const suspects = d.top_suspects || [];
-  if (!suspects.length) return;
-  document.getElementById('alertsEmpty').style.display = 'none';
-  list.innerHTML = suspects.slice(0, 15).map(s => {
-    const lvl = s.Risk_Level.startsWith('HIGH') ? 'red' : s.Risk_Level.startsWith('MEDIUM') ? 'amber' : 'green';
-    return `<div class="alert-item">
-      <div class="alert-dot ${lvl}"></div>
-      <div>
-        <span class="alert-sender">${s.Sender}</span>
-        <span class="badge ${s.Risk_Level.split(' ')[0]}" style="margin-left:8px">${s.Risk_Level}</span>
-        <div class="alert-reason">Risk Score: ${s.Risk_Score}/100 · ${s.Flagged_Txns} flagged transactions · TZS ${Number(s.Suspicious_Amount).toLocaleString(undefined,{maximumFractionDigits:0})} suspicious</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ── Reports / CSV download ──
-function renderReports() {
-  document.getElementById('reportsEmpty').style.display   = 'none';
-  document.getElementById('reportsContent').style.display = 'block';
-}
-
-function downloadCSV(type) {
-  if (!detectionData) return;
-  let csv = '', filename = '';
-  if (type === 'suspects') {
-    const rows = detectionData.top_suspects;
-    csv = 'Sender,Risk_Score,Risk_Level,Flagged_Txns,Suspicious_Amount,Fraud_Rate_%\n'
-        + rows.map(r => `${r.Sender},${r.Risk_Score},${r.Risk_Level},${r.Flagged_Txns},${r.Suspicious_Amount},${r['Fraud_Rate_%']}`).join('\n');
-    filename = 'paytrace_suspects.csv';
-  } else {
-    const rows = detectionData.flagged_sample || [];
-    csv = 'Sender,Receiver,Amount,Date,Fraud_Reason\n'
-        + rows.map(r => `"${r.Sender}","${r.Receiver}",${r.Amount},"${r.Date}","${r.Fraud_Reason}"`).join('\n');
-    filename = 'paytrace_flagged_transactions.csv';
-  }
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
-}
-</script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
